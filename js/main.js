@@ -23,15 +23,15 @@ form.addEventListener("submit", (evento) =>{
         itemAtual.id = existe.id;
 
         atualizaElemento(itemAtual);
+
+        itens[itens.findIndex(elemento => elemento.id === existe.id)] = itemAtual
     }else{
-        itemAtual.id = itens.length
+        itemAtual.id = itens[itens.lenght -1] ? itens[itens.lenght-1].id + 1 : 0
         criaElemento(itemAtual)
         itens.push(itemAtual);
     }
 
     localStorage.setItem("itens", JSON.stringify(itens))
-
-    
 })
 
 function criaElemento(item){
@@ -45,9 +45,31 @@ function criaElemento(item){
 
     novoItem.innerHTML += item.nome;
 
+    novoItem.appendChild(botaoDeleta(item.id));
+
     lista.appendChild(novoItem);
 }
 
 function atualizaElemento(item){
     document.querySelector("[data-id='"+item.id+"']").innerHTML = item.quantidade
+}
+
+function botaoDeleta(id){
+    const elementoBotao = document.createElement("button");
+    elementoBotao.innerHTML = "X"
+
+    elementoBotao.addEventListener("click", function(){
+        deletaElemento(this.parentNode, id)
+    })
+
+    return elementoBotao
+}
+
+function deletaElemento(tag, id){
+    tag.remove();
+
+    const elemento = itens.findIndex(elemento => elemento.id == id)
+    itens.splice(elemento,1)
+
+    localStorage.setItem("itens", JSON.stringify(itens))
 }
